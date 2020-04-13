@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/videoListFragment">
+
+    <fragment
+        android:id="@+id/videoListFragment"
+        android:name="com.example.navigationcomponentsexample.video.VideoListFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_video_list">
+        <action
+            android:id="@+id/action_videoListFragment_to_videoSearchFragment"
+            app:destination="@id/videoSearchFragment" />
+        <action
+            android:id="@+id/action_videoListFragment_to_videoUploadFragment"
+            app:destination="@id/videoUploadFragment" />
+        <action
+            android:id="@+id/action_videoListFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/diaryListFragment"
+        android:name="com.example.navigationcomponentsexample.diary.DiaryListFragment"
+        android:label="fragment_diary_list"
+        tools:layout="@layout/fragment_diary_list" />
+    <fragment
+        android:id="@+id/mallListFragment"
+        android:name="com.example.navigationcomponentsexample.mall.MallListFragment"
+        android:label="fragment_mall_list"
+        tools:layout="@layout/fragment_mall_list" />
+    <fragment
+        android:id="@+id/campListFragment"
+        android:name="com.example.navigationcomponentsexample.camp.CampListFragment"
+        android:label="fragment_camp_list"
+        tools:layout="@layout/fragment_camp_list" />
+    <fragment
+        android:id="@+id/memberListFragment"
+        android:name="com.example.navigationcomponentsexample.memver.MemberListFragment"
+        android:label="fragment_member_list"
+        tools:layout="@layout/fragment_member_list" />
+    <fragment
+        android:id="@+id/videoSearchFragment"
+        android:name="com.example.navigationcomponentsexample.video.VideoSearchFragment"
+        android:label="fragment_video_search"
+        tools:layout="@layout/fragment_video_search" />
+    <fragment
+        android:id="@+id/videoUploadFragment"
+        android:name="com.example.navigationcomponentsexample.video.VideoUploadFragment"
+        android:label="fragment_video_upload"
+        tools:layout="@layout/fragment_video_upload" />
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.example.navigationcomponentsexample.video.VideoPlayerFragment"
+        android:label="fragment_video_player"
+        tools:layout="@layout/fragment_video_player" />
+</navigation>
