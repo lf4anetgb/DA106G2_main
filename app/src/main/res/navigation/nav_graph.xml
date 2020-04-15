@@ -37,7 +37,7 @@
         tools:layout="@layout/fragment_camp_list" />
     <fragment
         android:id="@+id/memberListFragment"
-        android:name="com.example.navigationcomponentsexample.memver.MemberListFragment"
+        android:name="com.example.navigationcomponentsexample.member.MemberListFragment"
         android:label="fragment_member_list"
         tools:layout="@layout/fragment_member_list" />
     <fragment
@@ -55,4 +55,9 @@
         android:name="com.example.navigationcomponentsexample.video.VideoPlayerFragment"
         android:label="fragment_video_player"
         tools:layout="@layout/fragment_video_player" />
+    <fragment
+        android:id="@+id/memberLoginFragment"
+        android:name="com.example.navigationcomponentsexample.member.MemberLoginFragment"
+        android:label="fragment_member_login"
+        tools:layout="@layout/fragment_member_login" />
 </navigation>

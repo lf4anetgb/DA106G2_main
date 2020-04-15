@@ -18,7 +18,7 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/camp" />
     <item
-        android:id="@+id/memberListFragment"
+        android:id="@+id/memberLoginFragment"
         android:icon="@drawable/ic_settings"
         android:title="@string/member" />
 </menu>

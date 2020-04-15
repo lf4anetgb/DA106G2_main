@@ -9,4 +9,8 @@
     <string name="camp">露營</string>
     <string name="member">會員中心</string>
     <string name="title">開頭</string>
+    <string name="login">登入</string>
+    <string name="registration">註冊</string>
+    <string name="user_account">帳號</string>
+    <string name="user_password">密碼</string>
 </resources>

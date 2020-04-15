@@ -1,21 +1,21 @@
 package com.example.navigationcomponentsexample.video;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.navigationcomponentsexample.R;
 
@@ -30,7 +30,9 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
 
     private NavController navController;
     private RecyclerView recyclerView;
-    private List<Live> liveList;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private List<Live> liveList; //存資料用
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -42,6 +44,7 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_video_list, container, false);
+
     }
 
     @Override
@@ -52,7 +55,11 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         view.findViewById(R.id.btnSearch).setOnClickListener(this);
         view.findViewById(R.id.btnUpload).setOnClickListener(this);
 
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.GAP_HANDLING_NONE));
+        recyclerView.setHasFixedSize(true);//固定大小及模式
+
+        //設定Layout格式
+        layoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
         //假資料區
         liveList = new ArrayList<>();
@@ -78,10 +85,12 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
 
         }
 
-        recyclerView.setAdapter(new LiveAdapter(liveList));
-//        liveList.add()
+        adapter = new LiveAdapter(liveList);
+        recyclerView.setAdapter(adapter);
+
     }
 
+    //導向用
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -90,6 +99,7 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.btnUpload:
                 navController.navigate(R.id.action_videoListFragment_to_videoUploadFragment);
+                break;
         }
     }
 
@@ -97,13 +107,14 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
     private class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> {
 
         //設定單一的 View 所綁物件
-        private class ViewHolder extends RecyclerView.ViewHolder {
-
+        class ViewHolder extends RecyclerView.ViewHolder {
+            private CardView videoItem;
             private ImageView imageView;
             private TextView textView;
 
             private ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                videoItem = itemView.findViewById(R.id.videoItem);
                 imageView = itemView.findViewById(R.id.ivLiveItem);
                 textView = itemView.findViewById(R.id.tvLiveItem);
             }
@@ -119,21 +130,28 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_item, parent, false);
-            return new ViewHolder(view);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final Live live = liveList.get(position);
             holder.textView.setText(live.getLive_id());
-
+            holder.videoItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveID", live.getLive_id());
+                    navController.navigate(R.id.action_videoListFragment_to_videoPlayerFragment, bundle);
+                }
+            });
         }
 
         @Override
         public int getItemCount() {
             return liveList.size();
         }
-
 
     }
 }
