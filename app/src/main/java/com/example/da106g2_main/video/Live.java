@@ -1,4 +1,4 @@
-package com.example.navigationcomponentsexample.video;
+package com.example.da106g2_main.video;
 
 import java.sql.Timestamp;
 import java.util.Date;

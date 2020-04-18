@@ -1,7 +1,5 @@
-package com.example.navigationcomponentsexample.video;
+package com.example.da106g2_main.video;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,9 +12,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.example.navigationcomponentsexample.R;
-
-import java.io.IOException;
+import com.example.da106g2_main.R;
 
 
 /**

@@ -13,4 +13,5 @@
     <string name="registration">註冊</string>
     <string name="user_account">帳號</string>
     <string name="user_password">密碼</string>
+    <string name="err_account_password">帳號密碼錯誤</string>
 </resources>

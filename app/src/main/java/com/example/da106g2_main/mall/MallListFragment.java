@@ -1,4 +1,4 @@
-package com.example.navigationcomponentsexample.member;
+package com.example.da106g2_main.mall;
 
 import android.os.Bundle;
 
@@ -8,14 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.navigationcomponentsexample.R;
+import com.example.da106g2_main.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MemberLoginFragment extends Fragment {
+public class MallListFragment extends Fragment {
 
-    public MemberLoginFragment() {
+    public MallListFragment() {
         // Required empty public constructor
     }
 
@@ -24,6 +25,6 @@ public class MemberLoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_member_login, container, false);
+        return inflater.inflate(R.layout.fragment_mall_list, container, false);
     }
 }

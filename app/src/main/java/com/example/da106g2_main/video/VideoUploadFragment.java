@@ -1,4 +1,4 @@
-package com.example.navigationcomponentsexample.video;
+package com.example.da106g2_main.video;
 
 import android.os.Bundle;
 
@@ -8,15 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.navigationcomponentsexample.R;
+import com.example.da106g2_main.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoSearchFragment extends Fragment {
+public class VideoUploadFragment extends Fragment {
 
-    public VideoSearchFragment() {
+    public VideoUploadFragment() {
         // Required empty public constructor
     }
 
@@ -25,6 +25,6 @@ public class VideoSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_search, container, false);
+        return inflater.inflate(R.layout.fragment_video_upload, container, false);
     }
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mall.MallListFragment">
+    tools:context="com.example.da106g2_main.mall.MallListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

@@ -1,4 +1,4 @@
-package com.example.navigationcomponentsexample;
+package com.example.da106g2_main;
 
 import org.junit.Test;
 

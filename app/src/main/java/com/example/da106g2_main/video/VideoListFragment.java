@@ -1,23 +1,21 @@
-package com.example.navigationcomponentsexample.video;
+package com.example.da106g2_main.video;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.navigationcomponentsexample.R;
+import com.example.da106g2_main.R;
+import com.example.da106g2_main.tools.RecyclerViewAdapter;
+import com.example.da106g2_main.tools.Util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -58,7 +56,7 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         recyclerView.setHasFixedSize(true);//固定大小及模式
 
         //設定Layout格式
-        layoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
         //假資料區
@@ -85,7 +83,7 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
 
         }
 
-        adapter = new LiveAdapter(liveList);
+        adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
         recyclerView.setAdapter(adapter);
 
     }
@@ -103,55 +101,4 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    // RecyclerView調配器
-    private class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> {
-
-        //設定單一的 View 所綁物件
-        class ViewHolder extends RecyclerView.ViewHolder {
-            private CardView videoItem;
-            private ImageView imageView;
-            private TextView textView;
-
-            private ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                videoItem = itemView.findViewById(R.id.videoItem);
-                imageView = itemView.findViewById(R.id.ivLiveItem);
-                textView = itemView.findViewById(R.id.tvLiveItem);
-            }
-        }
-
-        private List<Live> liveList;
-
-        private LiveAdapter(List<Live> liveList) {
-            this.liveList = liveList;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_item, parent, false);
-            ViewHolder holder = new ViewHolder(view);
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            final Live live = liveList.get(position);
-            holder.textView.setText(live.getLive_id());
-            holder.videoItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("liveID", live.getLive_id());
-                    navController.navigate(R.id.action_videoListFragment_to_videoPlayerFragment, bundle);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return liveList.size();
-        }
-
-    }
 }

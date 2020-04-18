@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/videoListFragment"
-        android:name="com.example.navigationcomponentsexample.video.VideoListFragment"
+        android:name="com.example.da106g2_main.video.VideoListFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_video_list">
         <action
@@ -22,42 +22,46 @@
     </fragment>
     <fragment
         android:id="@+id/diaryListFragment"
-        android:name="com.example.navigationcomponentsexample.diary.DiaryListFragment"
+        android:name="com.example.da106g2_main.diary.DiaryListFragment"
         android:label="fragment_diary_list"
         tools:layout="@layout/fragment_diary_list" />
     <fragment
         android:id="@+id/mallListFragment"
-        android:name="com.example.navigationcomponentsexample.mall.MallListFragment"
+        android:name="com.example.da106g2_main.mall.MallListFragment"
         android:label="fragment_mall_list"
         tools:layout="@layout/fragment_mall_list" />
     <fragment
         android:id="@+id/campListFragment"
-        android:name="com.example.navigationcomponentsexample.camp.CampListFragment"
+        android:name="com.example.da106g2_main.camp.CampListFragment"
         android:label="fragment_camp_list"
         tools:layout="@layout/fragment_camp_list" />
     <fragment
         android:id="@+id/memberListFragment"
-        android:name="com.example.navigationcomponentsexample.member.MemberListFragment"
+        android:name="com.example.da106g2_main.member.MemberListFragment"
         android:label="fragment_member_list"
-        tools:layout="@layout/fragment_member_list" />
+        tools:layout="@layout/fragment_member_list" >
+        <action
+            android:id="@+id/action_memberListFragment_to_memberLoginFragment"
+            app:destination="@id/memberLoginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/videoSearchFragment"
-        android:name="com.example.navigationcomponentsexample.video.VideoSearchFragment"
+        android:name="com.example.da106g2_main.video.VideoSearchFragment"
         android:label="fragment_video_search"
         tools:layout="@layout/fragment_video_search" />
     <fragment
         android:id="@+id/videoUploadFragment"
-        android:name="com.example.navigationcomponentsexample.video.VideoUploadFragment"
+        android:name="com.example.da106g2_main.video.VideoUploadFragment"
         android:label="fragment_video_upload"
         tools:layout="@layout/fragment_video_upload" />
     <fragment
         android:id="@+id/videoPlayerFragment"
-        android:name="com.example.navigationcomponentsexample.video.VideoPlayerFragment"
+        android:name="com.example.da106g2_main.video.VideoPlayerFragment"
         android:label="fragment_video_player"
         tools:layout="@layout/fragment_video_player" />
     <fragment
         android:id="@+id/memberLoginFragment"
-        android:name="com.example.navigationcomponentsexample.member.MemberLoginFragment"
+        android:name="com.example.da106g2_main.member.MemberLoginFragment"
         android:label="fragment_member_login"
         tools:layout="@layout/fragment_member_login" />
 </navigation>
