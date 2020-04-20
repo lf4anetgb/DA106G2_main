@@ -9,28 +9,33 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.da106g2_main.R;
+import com.example.da106g2_main.tools.CommunicationTask;
+import com.example.da106g2_main.tools.ImageTask;
 import com.example.da106g2_main.tools.RecyclerViewAdapter;
 import com.example.da106g2_main.tools.Util;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class VideoListFragment extends Fragment implements View.OnClickListener {
-
+    private final static String TAG = "VideoListFragment";
     private NavController navController;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private RecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Live> liveList; //存資料用
+    private ImageTask imageTask;
+    private CommunicationTask getLiveTask;
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -58,34 +63,39 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         //設定Layout格式
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+    }
 
-        //假資料區
-        liveList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            String live_id = "LLN000000" + (i + 1), // 直播ID
-                    member_id = "MMN000000" + (i + 1), // 會員ID
-                    videoAddress = null, // 影片位子
-                    teaser_content = "呵呵", // 直播預告內容
-                    title = "第二支"; // 直播標頭
-            Integer status = 0, // 直播狀態
-                    watcher_num = 0; // 觀看人數
-            Date live_time = null; // 開始時間
-            DateFormat df = new SimpleDateFormat("yyyy/MM/dd"); // 設定日期輸入格式
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.networkConnected(getActivity())) {
+            //包裝任務
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("action", "getAll");
+
+            //下命令
+            getLiveTask = new CommunicationTask(Util.URL + "Android/LiveServlet", jsonObject.toString());
+
+            List<Live> liveList = null; //存資料用
 
             try {
-                live_time = df.parse("2020/01/02");
-            } catch (ParseException e) {
-                e.printStackTrace();
+                String jsonIn = getLiveTask.execute().get();
+                Log.d(TAG, "jsonIN: " + jsonIn);
+                Type listType = new TypeToken<List<Live>>() {
+                }.getType();
+                liveList = new Gson().fromJson(jsonIn, listType);
+                Log.d(TAG, "liveList.get(1).getWatcher_num():" + liveList.get(1).getWatched_num().toString());
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
             }
 
-            liveList.add(new Live(live_id, member_id, videoAddress, teaser_content, title,
-                    live_time, status, watcher_num));
+            if (!(liveList == null || liveList.isEmpty())) {
+                adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
+                adapter.setImageTask(imageTask);
+                recyclerView.setAdapter(adapter);
+            }
 
         }
-
-        adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
-        recyclerView.setAdapter(adapter);
-
     }
 
     //導向用
@@ -101,4 +111,16 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    //離開畫面時執行
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (imageTask != null) {
+            imageTask.cancel(true);
+        }
+
+        if (getLiveTask != null) {
+            getLiveTask.cancel(true);
+        }
+    }
 }

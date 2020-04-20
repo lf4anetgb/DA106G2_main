@@ -14,6 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.da106g2_main.R;
 import com.example.da106g2_main.video.Live;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -22,9 +27,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List data;
     private int layoutType;
     private NavController navController;
+    private ImageTask imageTask = null;
 
     //用於RecyclerView選擇
     public final static int LAYOUT_VIDEO_LIST = 0;
+
+    //設定多媒體連線物件
+    public void setImageTask(ImageTask imageTask) {
+        this.imageTask = imageTask;
+    }
 
     public RecyclerViewAdapter(List data, int layoutType, NavController navController) {
         this.data = data;
@@ -60,13 +71,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         switch (holder.getItemViewType()) {
             case LAYOUT_VIDEO_LIST: {
                 final Live live = (Live) data.get(position);
+
+                String url = Util.URL + "Android/LiveServlet";
                 ViewHolder_VideoList holderVideoList = (ViewHolder_VideoList) holder;
-                holderVideoList.textView.setText(live.getLive_id());
+
+                imageTask = new ImageTask(url, ImageTask.FROM_LIVE, live.getLive_id(), 0, holderVideoList.ivLiveItem);
+                imageTask.execute();
+
+                holderVideoList.tvLiveItemTitle.setText(live.getTitle());
+                holderVideoList.tvMessage.setText(live.getMember_id() + "·觀看次數：" + live.getWatched_num() + "·");
                 holderVideoList.videoItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("liveID", live.getLive_id());
+                        bundle.putString("live_id", live.getLive_id());
+                        bundle.putString("member_id", live.getMember_id());
+                        bundle.putString("teaser_content", live.getTeaser_content());
+                        bundle.putString("title", live.getTitle());
+                        bundle.putString("live_time", live.getLive_time().toString());
+                        bundle.putInt("watcher_num", live.getWatched_num());
+
                         navController.navigate(R.id.action_videoListFragment_to_videoPlayerFragment, bundle);
                     }
                 });
@@ -82,14 +106,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //影片清單用
     class ViewHolder_VideoList extends RecyclerView.ViewHolder {
         private CardView videoItem;
-        private ImageView imageView;
-        private TextView textView;
+        private ImageView ivLiveItem;
+        private TextView tvLiveItemTitle, tvMessage;
 
         ViewHolder_VideoList(@NonNull View itemView) {
             super(itemView);
             videoItem = itemView.findViewById(R.id.videoItem);
-            imageView = itemView.findViewById(R.id.ivLiveItem);
-            textView = itemView.findViewById(R.id.tvLiveItem);
+            ivLiveItem = itemView.findViewById(R.id.ivLiveItem);
+            tvLiveItemTitle = itemView.findViewById(R.id.tvLiveItemTitle);
+            tvMessage = itemView.findViewById(R.id.tvMessage);
         }
     }
+
 }

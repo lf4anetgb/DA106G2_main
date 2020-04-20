@@ -11,14 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvVideoPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:text="播放影片用"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
-
         <FrameLayout
             android:id="@+id/frameLayout2"
             android:layout_width="match_parent"
@@ -32,6 +24,50 @@
                 android:layout_height="300dp" />
 
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvVideoPlayerTitle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="播放影片用"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+
+        <TextView
+            android:id="@+id/tvVideoPlayerWatcher"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/tvVideoPlayerTitle"
+            app:layout_constraintStart_toStartOf="@+id/tvVideoPlayerTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvVideoPlayerTitle" />
+
+        <TextView
+            android:id="@+id/tvVideoPlayerTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/tvVideoPlayerWatcher"
+            app:layout_constraintStart_toStartOf="@+id/tvVideoPlayerWatcher"
+            app:layout_constraintTop_toBottomOf="@+id/tvVideoPlayerWatcher" />
+
+        <TextView
+            android:id="@+id/tvVideoPlayerTeaserContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvVideoPlayerTime"
+            app:layout_constraintStart_toStartOf="@+id/tvVideoPlayerTime"
+            app:layout_constraintTop_toBottomOf="@+id/tvVideoPlayerTime" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

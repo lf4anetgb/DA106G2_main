@@ -4,16 +4,17 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Live {
-    private String live_id, // 直播ID
-            member_id, // 會員ID
-            videoAddress, // 影片位子
-            teaser_content, // 直播開始時間
-            title; // 直播標頭
-    private byte[] pictuer, // 預覽圖片
-            video; // 影片本體
+    private String live_id; // 直播ID
+    private String member_id; // 會員ID
+    private String videoAddress; // 影片位子
+    private String teaser_content; // 直播預告內容
+    private String title; // 直播標頭
+    private int status; // 直播狀態
+    private int watched_num; // 觀看人數
+    private byte[] picture; // 預覽圖片
+    private byte[] video; // 影片本體
     private Timestamp live_time; // 開始時間
-    private Integer status, // 直播狀態
-            watcher_num; // 觀看人數
+
 
     public Live() {
         super();
@@ -21,22 +22,22 @@ public class Live {
 
     // 全塞
     public Live(String live_id, String member_id, String videoAddress, String teaser_content, String title,
-                byte[] pictuer, byte[] video, Date live_time, Integer status, Integer watcher_num) {
+                byte[] picture, byte[] video, Date live_time, Integer status, Integer watched_num) {
         super();
         this.live_id = live_id;
         this.member_id = member_id;
         this.videoAddress = videoAddress;
         this.teaser_content = teaser_content;
         this.title = title;
-        this.pictuer = pictuer;
+        this.picture = picture;
         this.video = video;
         this.live_time = new Timestamp(live_time.getTime());
         this.status = status;
-        this.watcher_num = watcher_num;
+        this.watched_num = watched_num;
     }
 
     public Live(String live_id, String member_id, String videoAddress, String teaser_content, String title,
-                Date live_time, Integer status, Integer watcher_num) {
+                Date live_time, Integer status, Integer watched_num) {
         super();
         this.live_id = live_id;
         this.member_id = member_id;
@@ -45,17 +46,7 @@ public class Live {
         this.title = title;
         this.live_time = new Timestamp(live_time.getTime());
         this.status = status;
-        this.watcher_num = watcher_num;
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer re = new StringBuffer();
-        re.append("[live_id=").append(live_id).append(", member_id=").append(member_id).append(", videoAddress=")
-                .append(videoAddress).append(", teaser_content=").append(teaser_content).append(", title=")
-                .append(title).append(", live_time=").append(live_time).append(", status=").append(status)
-                .append(", watcher_num=").append(watcher_num).append("]\r\n");
-        return re.toString();
+        this.watched_num = watched_num;
     }
 
     public String getLive_id() {
@@ -90,12 +81,12 @@ public class Live {
         this.title = title;
     }
 
-    public byte[] getPictuer() {
-        return pictuer;
+    public byte[] getPicture() {
+        return picture;
     }
 
-    public void setPictuer(byte[] pictuer) {
-        this.pictuer = pictuer;
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     public Timestamp getLive_time() {
@@ -114,12 +105,12 @@ public class Live {
         this.status = status;
     }
 
-    public Integer getWatcher_num() {
-        return watcher_num;
+    public Integer getWatched_num() {
+        return watched_num;
     }
 
-    public void setWatcher_num(Integer watcher_num) {
-        this.watcher_num = watcher_num;
+    public void setWatched_num(Integer watched_num) {
+        this.watched_num = watched_num;
     }
 
     public String getVideoAddress() {
