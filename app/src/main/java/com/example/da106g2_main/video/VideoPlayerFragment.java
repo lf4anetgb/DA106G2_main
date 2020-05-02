@@ -1,5 +1,6 @@
 package com.example.da106g2_main.video;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,24 +17,19 @@ import android.widget.VideoView;
 
 import com.example.da106g2_main.R;
 import com.example.da106g2_main.tools.Util;
-
-import org.json.JSONObject;
-
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class VideoPlayerFragment extends Fragment {
+    private static final String TAG = "VideoPlayerFragment";
 
     private TextView tvVideoPlayerTitle, tvVideoPlayerWatcher, tvVideoPlayerTime, tvVideoPlayerTeaserContent;
     private VideoView liveVideoView;
     private MediaController mediaController;
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
+    Live live;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -56,27 +52,43 @@ public class VideoPlayerFragment extends Fragment {
         tvVideoPlayerTeaserContent = view.findViewById(R.id.tvVideoPlayerTeaserContent);
         liveVideoView = view.findViewById(R.id.liveVideoView);
 
+        String jsonIn = getArguments().getString("live");
+        Gson gson = new Gson();
+        live = gson.fromJson(jsonIn, Live.class);
+
         //測試影片
-//        String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.video001;
+//        String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.video002;
 //        Uri uri = Uri.parse(videoPath);
-//        liveVideoView.setVideoURI(uri);
-        Uri uri = Uri.parse(Util.URL + "Android/LiveServlet?live_id=" + getArguments().getString("live_id"));
+
+        Uri uri = Uri.parse(Util.URL + "Android/GetVideoServlet?live_id=" + live.getLive_id());
         liveVideoView.setVideoURI(uri);
 
         mediaController = new MediaController(view.getContext());
         mediaController.setAnchorView(liveVideoView);
         liveVideoView.setMediaController(mediaController);
+
+
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        tvVideoPlayerTitle.setText(getArguments().getString("title"));
-        tvVideoPlayerWatcher.setText(String.valueOf(getArguments().getInt("watcher_num")));
-        tvVideoPlayerTime.setText(getArguments().getString("live_time"));
-        tvVideoPlayerTeaserContent.setText(getArguments().getString("teaser_content"));
+        tvVideoPlayerTitle.setText(live.getTitle());
+        tvVideoPlayerWatcher.setText(String.valueOf(live.getWatched_num()));
+        tvVideoPlayerTime.setText(live.getLive_time().toString());
+        tvVideoPlayerTeaserContent.setText(live.getTeaser_content());
 
-        liveVideoView.start();
+        liveVideoView.requestFocus();
+        liveVideoView.getCurrentPosition();
+
+        liveVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                liveVideoView.start();
+            }
+        });
     }
 }

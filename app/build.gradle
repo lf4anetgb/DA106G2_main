@@ -56,6 +56,9 @@ dependencies {
     implementation "org.jsoup:jsoup:1.12.1"
 
     //Gson
-    def gson_version="2.8.6"
+    def gson_version = "2.8.6"
     implementation "com.google.code.gson:gson:$gson_version"
+
+    //webRTC
+    implementation 'org.webrtc:google-webrtc:1.0.30039'
 }

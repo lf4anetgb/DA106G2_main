@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.da106g2_main.R;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedInputStream;
@@ -22,6 +21,7 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
 
     //通用來源參數
     public final static short FROM_LIVE = 0;
+    public final static short FROM_ITEM = 1;
 
     private final static String TAG = "ImageTask";
     private String url, target;//連線位子、取得哪一個
@@ -49,6 +49,7 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
     private String getSendCategory() {
         switch (source) {
             case FROM_LIVE:
+            case FROM_ITEM:
                 return "getOnePicture";
         }
         //如都不是時
@@ -60,6 +61,8 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
         switch (source) {
             case FROM_LIVE:
                 return "live_id";
+            case FROM_ITEM:
+                return "item_id";
         }
         return "";
     }
@@ -77,6 +80,7 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
 
     //背景執行詳細方法
     private Bitmap getRemoteImage(String url, String jsonOut) {
+//        byte[] img = null;
         Bitmap bitmap = null;
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
@@ -96,6 +100,20 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     //使用圖形工廠的decodeStream將資料IN出來
                     bitmap = BitmapFactory.decodeStream(new BufferedInputStream(con.getInputStream()));
+
+//                    try (BufferedInputStream bIn = new BufferedInputStream(con.getInputStream())) {
+//                        img = new byte[con.getContentLength()];
+//                        byte[] img_ = new byte[1];
+//                        int i = 0;
+//                        while (bIn.read(img_) != -1) {
+//                            img[i] = img_[0];
+//                            i++;
+//                        }
+//
+//                        Log.d(TAG, "讀取量： " + bIn.available());
+//                        Log.d(TAG, "imgSize: " + img.length);
+//                    }
+
                 } else {
                     Log.d(TAG, "response code: " + responseCode);
                 }
@@ -109,22 +127,18 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
             Log.d(TAG, "倒大楣啦！錯誤：" + e.toString());
         }
 
+//        return img;
         return bitmap;
     }
 
     //背景執行完後
     @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
+    protected void onPostExecute(Bitmap img) {
+        super.onPostExecute(img);
         ImageView imageView = imageViewWeakReference.get();
-        if (isCancelled() || imageView == null) {
+        if (isCancelled() || imageView == null || img == null || img.getHeight() <= 0) {
             return;
         }
-
-        if (bitmap == null || bitmap.getHeight() <= 0) {
-            imageView.setImageResource(R.drawable.testp2);
-        } else {
-            imageView.setImageBitmap(bitmap);
-        }
+        imageView.setImageBitmap(img);
     }
 }

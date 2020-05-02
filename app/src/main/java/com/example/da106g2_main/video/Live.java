@@ -1,9 +1,10 @@
 package com.example.da106g2_main.video;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class Live {
+public class Live implements Serializable {
     private String live_id; // 直播ID
     private String member_id; // 會員ID
     private String videoAddress; // 影片位子
@@ -22,7 +23,7 @@ public class Live {
 
     // 全塞
     public Live(String live_id, String member_id, String videoAddress, String teaser_content, String title,
-                byte[] picture, byte[] video, Date live_time, Integer status, Integer watched_num) {
+                byte[] picture, byte[] video, Date live_time, int status, int watched_num) {
         super();
         this.live_id = live_id;
         this.member_id = member_id;
@@ -37,7 +38,7 @@ public class Live {
     }
 
     public Live(String live_id, String member_id, String videoAddress, String teaser_content, String title,
-                Date live_time, Integer status, Integer watched_num) {
+                Date live_time, int status, int watched_num) {
         super();
         this.live_id = live_id;
         this.member_id = member_id;
@@ -97,19 +98,19 @@ public class Live {
         this.live_time.setTime(live_time.getTime());
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getWatched_num() {
+    public int getWatched_num() {
         return watched_num;
     }
 
-    public void setWatched_num(Integer watched_num) {
+    public void setWatched_num(int watched_num) {
         this.watched_num = watched_num;
     }
 

@@ -24,12 +24,26 @@
         android:id="@+id/diaryListFragment"
         android:name="com.example.da106g2_main.diary.DiaryListFragment"
         android:label="fragment_diary_list"
-        tools:layout="@layout/fragment_diary_list" />
+        tools:layout="@layout/fragment_diary_list" >
+        <action
+            android:id="@+id/action_diaryListFragment_to_diaryFragment"
+            app:destination="@id/diaryFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mallListFragment"
         android:name="com.example.da106g2_main.mall.MallListFragment"
         android:label="fragment_mall_list"
-        tools:layout="@layout/fragment_mall_list" />
+        tools:layout="@layout/fragment_mall_list" >
+        <action
+            android:id="@+id/action_mallListFragment_to_shoppingCartFragment"
+            app:destination="@id/shoppingCartFragment" />
+        <action
+            android:id="@+id/action_mallListFragment_to_searchCommodityFragment"
+            app:destination="@id/searchCommodityFragment" />
+        <action
+            android:id="@+id/action_mallListFragment_to_shoopingFragment"
+            app:destination="@id/shoopingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/campListFragment"
         android:name="com.example.da106g2_main.camp.CampListFragment"
@@ -43,6 +57,12 @@
         <action
             android:id="@+id/action_memberListFragment_to_memberLoginFragment"
             app:destination="@id/memberLoginFragment" />
+        <action
+            android:id="@+id/action_memberListFragment_self"
+            app:destination="@id/memberListFragment" />
+        <action
+            android:id="@+id/action_memberListFragment_to_memberOrdersListFragment"
+            app:destination="@id/memberOrdersListFragment" />
     </fragment>
     <fragment
         android:id="@+id/videoSearchFragment"
@@ -53,7 +73,11 @@
         android:id="@+id/videoUploadFragment"
         android:name="com.example.da106g2_main.video.VideoUploadFragment"
         android:label="fragment_video_upload"
-        tools:layout="@layout/fragment_video_upload" />
+        tools:layout="@layout/fragment_video_upload" >
+        <action
+            android:id="@+id/action_videoUploadFragment_to_memberLoginFragment"
+            app:destination="@id/memberLoginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/videoPlayerFragment"
         android:name="com.example.da106g2_main.video.VideoPlayerFragment"
@@ -64,4 +88,55 @@
         android:name="com.example.da106g2_main.member.MemberLoginFragment"
         android:label="fragment_member_login"
         tools:layout="@layout/fragment_member_login" />
+    <fragment
+        android:id="@+id/diaryFragment"
+        android:name="com.example.da106g2_main.diary.DiaryFragment"
+        android:label="fragment_diary"
+        tools:layout="@layout/fragment_diary" />
+    <fragment
+        android:id="@+id/shoppingCartFragment"
+        android:name="com.example.da106g2_main.mall.ShoppingCartFragment"
+        android:label="fragment_shopping_cart"
+        tools:layout="@layout/fragment_shopping_cart" >
+        <action
+            android:id="@+id/action_shoppingCartFragment_to_memberLoginFragment"
+            app:destination="@id/memberLoginFragment" />
+        <action
+            android:id="@+id/action_shoppingCartFragment_to_mallListFragment"
+            app:destination="@id/mallListFragment" />
+        <action
+            android:id="@+id/action_shoppingCartFragment_self"
+            app:destination="@id/shoppingCartFragment" />
+        <action
+            android:id="@+id/action_shoppingCartFragment_to_memberOrderDetailFragment"
+            app:destination="@id/memberOrderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchCommodityFragment"
+        android:name="com.example.da106g2_main.mall.SearchCommodityFragment"
+        android:label="fragment_search_commodity"
+        tools:layout="@layout/fragment_search_commodity" />
+    <fragment
+        android:id="@+id/shoopingFragment"
+        android:name="com.example.da106g2_main.mall.ShoopingFragment"
+        android:label="fragment_shooping"
+        tools:layout="@layout/fragment_shooping" >
+        <action
+            android:id="@+id/action_shoopingFragment_to_shoppingCartFragment"
+            app:destination="@id/shoppingCartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memberOrdersListFragment"
+        android:name="com.example.da106g2_main.member.MemberOrdersListFragment"
+        android:label="fragment_member_orders_list"
+        tools:layout="@layout/fragment_member_orders_list" >
+        <action
+            android:id="@+id/action_memberOrdersListFragment_to_memberOrderDetailFragment"
+            app:destination="@id/memberOrderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memberOrderDetailFragment"
+        android:name="com.example.da106g2_main.member.MemberOrderDetailFragment"
+        android:label="fragment_member_order_detail"
+        tools:layout="@layout/fragment_member_order_detail" />
 </navigation>

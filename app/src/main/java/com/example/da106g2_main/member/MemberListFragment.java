@@ -1,5 +1,7 @@
 package com.example.da106g2_main.member;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,8 +20,9 @@ import com.example.da106g2_main.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MemberListFragment extends Fragment {
+public class MemberListFragment extends Fragment implements View.OnClickListener {
 
+    private static final String SHARED_PREFERENCES_GUIDE = "member";
     private NavController navController;
 
     public MemberListFragment() {
@@ -37,6 +40,35 @@ public class MemberListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        navController.navigate(R.id.action_memberListFragment_to_memberLoginFragment);
+        view.findViewById(R.id.btnLogout).setOnClickListener(this);
+        view.findViewById(R.id.btnOrderList).setOnClickListener(this);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
+
+        if (!sharedPreferences.getBoolean("login", false)) {
+            navController.navigate(R.id.action_memberListFragment_to_memberLoginFragment); //導入登入頁面
+        }
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnLogout: {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
+                sharedPreferences.edit().putBoolean("login", false)
+                        .putString("memberID", null)
+                        .putString("password", null).apply();
+                navController.navigate(R.id.action_memberListFragment_self);
+                return;
+            }
+
+            case R.id.btnOrderList: {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
+                Bundle bundle = new Bundle();
+                bundle.putString("memberID", sharedPreferences.getString("memberID", ""));
+                navController.navigate(R.id.action_memberListFragment_to_memberOrdersListFragment, bundle);
+            }
+        }
     }
 }

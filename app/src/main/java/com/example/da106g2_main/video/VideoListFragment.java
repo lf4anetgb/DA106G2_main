@@ -23,8 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -55,57 +53,61 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         recyclerView = view.findViewById(R.id.liveRecyclerView);
-        view.findViewById(R.id.btnSearch).setOnClickListener(this);
-        view.findViewById(R.id.btnUpload).setOnClickListener(this);
-
-        recyclerView.setHasFixedSize(true);//固定大小及模式
+        view.findViewById(R.id.btnSearchVideo).setOnClickListener(this);
+        view.findViewById(R.id.btnUploadVideo).setOnClickListener(this);
 
         //設定Layout格式
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);//固定大小及模式
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (Util.networkConnected(getActivity())) {
-            //包裝任務
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("action", "getAll");
 
-            //下命令
-            getLiveTask = new CommunicationTask(Util.URL + "Android/LiveServlet", jsonObject.toString());
-
-            List<Live> liveList = null; //存資料用
-
-            try {
-                String jsonIn = getLiveTask.execute().get();
-                Log.d(TAG, "jsonIN: " + jsonIn);
-                Type listType = new TypeToken<List<Live>>() {
-                }.getType();
-                liveList = new Gson().fromJson(jsonIn, listType);
-                Log.d(TAG, "liveList.get(1).getWatcher_num():" + liveList.get(1).getWatched_num().toString());
-            } catch (Exception e) {
-                Log.d(TAG, e.toString());
-            }
-
-            if (!(liveList == null || liveList.isEmpty())) {
-                adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
-                adapter.setImageTask(imageTask);
-                recyclerView.setAdapter(adapter);
-            }
-
+        if (!Util.networkConnected(getActivity())) {
+            Util.showToast(getActivity(), R.string.not_connected);
+            return;
         }
+
+        //包裝任務
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("action", "getAll");
+
+        //下命令
+        getLiveTask = new CommunicationTask(Util.URL + "Android/LiveServlet", jsonObject.toString());
+
+        List<Live> liveList = null; //存資料用
+
+        try {
+            String jsonIn = getLiveTask.execute().get();
+            Log.d(TAG, "jsonIN: " + jsonIn);
+            Type listType = new TypeToken<List<Live>>() {
+            }.getType();
+            liveList = new Gson().fromJson(jsonIn, listType);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+
+        if (liveList == null || liveList.isEmpty()) {
+            Util.showToast(getActivity(), R.string.no_data);
+            return;
+        }
+
+        adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
+        adapter.setImageTask(imageTask);
+        recyclerView.setAdapter(adapter);
     }
 
     //導向用
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnSearch:
+            case R.id.btnSearchVideo:
                 navController.navigate(R.id.action_videoListFragment_to_videoSearchFragment);
                 break;
-            case R.id.btnUpload:
+            case R.id.btnUploadVideo:
                 navController.navigate(R.id.action_videoListFragment_to_videoUploadFragment);
                 break;
         }
@@ -117,10 +119,12 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         super.onStop();
         if (imageTask != null) {
             imageTask.cancel(true);
+            imageTask = null;
         }
 
         if (getLiveTask != null) {
             getLiveTask.cancel(true);
+            getLiveTask = null;
         }
     }
 }
