@@ -1,6 +1,9 @@
 package com.example.da106g2_main.tools;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.da106g2_main.R;
+import com.example.da106g2_main.camp.Booking;
 import com.example.da106g2_main.diary.Diary;
 import com.example.da106g2_main.mall.Item;
 import com.example.da106g2_main.mall.OrderDetail;
@@ -22,6 +26,8 @@ import com.example.da106g2_main.video.Live;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -30,10 +36,11 @@ import java.util.concurrent.ExecutionException;
 //此為通用RecyclerViewAdapter，只要傳入想Layout的樣式及NavController即可
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List data;
-    private int layoutType;
+    private int layoutType, imageSize;
     private NavController navController;
     private ImageTask imageTask = null;
     private CommunicationTask communicationTask = null;
+    private View view_;
 
     //用於RecyclerView選擇
     public final static int LAYOUT_VIDEO_LIST = 0;
@@ -41,15 +48,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public final static int LAYOUT_MALL_LIST = 2;
     public final static int LAYOUT_ORDER_LIST = 3;
     public final static int LAYOUT_ORDER_DETAIL_LIST = 4;
+    public final static int LAYOUT_BOOKING_LIST = 5;
 
     //設定圖片連線物件
-    public void setImageTask(ImageTask imageTask) {
+    public void setImageTask(ImageTask imageTask, View view) {
         this.imageTask = imageTask;
+        switch (layoutType) {
+            case LAYOUT_VIDEO_LIST:
+            case LAYOUT_DIARY_LIST:
+                imageSize = view.getContext().getResources().getDisplayMetrics().widthPixels;
+                return;
+            case LAYOUT_MALL_LIST:
+            case LAYOUT_ORDER_DETAIL_LIST:
+                imageSize = view.getContext().getResources().getDisplayMetrics().widthPixels / 4;
+                return;
+        }
     }
 
     //設定連線物件
     public void setCommunicationTask(CommunicationTask communicationTask) {
         this.communicationTask = communicationTask;
+    }
+
+    public void setView_(View view_) {
+        this.view_ = view_;
     }
 
     public RecyclerViewAdapter(List data, int layoutType, NavController navController) {
@@ -98,6 +120,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 RecyclerViewAdapter.ViewHolder_OrderList orderHolder = new RecyclerViewAdapter.ViewHolder_OrderList(view);
                 return orderHolder;
             }
+
+            case LAYOUT_BOOKING_LIST: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_camp_booking, parent, false);
+                RecyclerViewAdapter.ViewHolder_BookingList bookingHolder = new RecyclerViewAdapter.ViewHolder_BookingList(view);
+                return bookingHolder;
+            }
         }
         return null;
     }
@@ -114,7 +142,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 String url = Util.URL + "Android/LiveServlet";
                 ViewHolder_VideoList holderVideoList = (ViewHolder_VideoList) holder;
 
-                imageTask = new ImageTask(url, ImageTask.FROM_LIVE, live.getLive_id(), 0, holderVideoList.ivLiveItem);
+                imageTask = new ImageTask(url, ImageTask.FROM_LIVE, live.getLive_id(), imageSize, holderVideoList.ivLiveItem);
                 imageTask.execute();
 
                 holderVideoList.tvLiveItemTitle.setText(live.getTitle());
@@ -169,7 +197,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 String url = Util.URL + "Android/ItemServlet";
                 ViewHolder_MallList holderVideoList = (ViewHolder_MallList) holder;
 
-                imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), 0, holderVideoList.imgvMall);
+                imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), imageSize, holderVideoList.imgvMall);
                 imageTask.execute();
 
                 holderVideoList.tvMallName.setText(item.getItem_name());
@@ -221,7 +249,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ViewHolder_OrderList holderVideoList = (ViewHolder_OrderList) holder;
 
                 //抓取商品圖片
-                imageTask = new ImageTask(url, ImageTask.FROM_ITEM, orderDetail.getItem_id(), 0, holderVideoList.imgViewOder);
+                imageTask = new ImageTask(url, ImageTask.FROM_ITEM, orderDetail.getItem_id(), imageSize, holderVideoList.imgViewOder);
                 imageTask.execute();
 
                 //抓取商品名稱
@@ -247,6 +275,67 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holderVideoList.tvOrderCommodityQuantity.setText("購買數量： " + String.valueOf(orderDetail.getItem_quantity()));
                 holderVideoList.tvOrderCommodityTime.setText("");
                 holderVideoList.tvOrderCommodityTime.setHeight(0);
+                return;
+            }
+
+            //訂位訂單清單任務
+            case LAYOUT_BOOKING_LIST: {
+                final Booking booking = (Booking) data.get(position);
+
+                ViewHolder_BookingList holderVideoList = (ViewHolder_BookingList) holder;
+
+//                String url = Util.URL + "Android/ItemServlet";
+//                imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), imageSize, holderVideoList.imgvMall);
+//                imageTask.execute();
+
+                String bookingStatus = "";
+                switch (booking.getBk_status()) {
+                    case 1:
+                        bookingStatus = "沒錢還想開房堅";
+                        break;
+                    case 2:
+                        bookingStatus = "錢呢！剛剛明明在錢包裡";
+                        break;
+                    case 3:
+                        bookingStatus = "錢還是留著買R20比較實在";
+                        break;
+                    case 4:
+                        bookingStatus = "阿阿啊！不小心滑進去了";
+                        break;
+                    case 5:
+                        bookingStatus = "阿斯~出來了";
+                        break;
+                }
+
+                holderVideoList.tvCampBookingID.setText(booking.getBk_number());
+                holderVideoList.tvCampBookingStartTime.setText(booking.getBk_start().toString());
+                holderVideoList.tvCampBookingEndTime.setText(booking.getBk_end().toString());
+                holderVideoList.tvCampBookingStatus.setText(bookingStatus);
+                holderVideoList.tvCampPersonInCharge.setText(booking.getStaff_id());
+                holderVideoList.bookingItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        StringBuffer sb = new StringBuffer(Util.URL).append("Android/BookingServlet?bk_number=").append(booking.getBk_number());
+                        int smallerDimension = getDimension();
+
+                        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(sb.toString(), null, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), smallerDimension);
+
+                        try {
+                            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+                            holderVideoList.imgvCampQRCode.setImageBitmap(bitmap);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                            Log.d("Recycler_Booking", "QRCode生產錯誤");
+                        }
+                    }
+
+                    public int getDimension() {
+                        int heiget = view_.getContext().getResources().getDisplayMetrics().heightPixels;
+                        int width = view_.getContext().getResources().getDisplayMetrics().widthPixels;
+                        int smallerDimension = width < heiget ? width : heiget;
+                        return smallerDimension /= 2;
+                    }
+                });
                 return;
             }
         }
@@ -322,4 +411,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    //訂位訂單清單用
+    class ViewHolder_BookingList extends RecyclerView.ViewHolder {
+        private CardView bookingItem;
+        private TextView tvCampBookingID, tvCampBookingStartTime, tvCampBookingEndTime, tvCampBookingStatus, tvCampPersonInCharge;
+        private ImageView imgvCampQRCode;
+
+        public ViewHolder_BookingList(@NonNull View itemView) {
+            super(itemView);
+            bookingItem = itemView.findViewById(R.id.bookingItem);
+            tvCampBookingID = itemView.findViewById(R.id.tvCampBookingID);
+            tvCampBookingStartTime = itemView.findViewById(R.id.tvCampBookingStartTime);
+            tvCampBookingEndTime = itemView.findViewById(R.id.tvCampBookingEndTime);
+            tvCampBookingStatus = itemView.findViewById(R.id.tvCampBookingStatus);
+            tvCampPersonInCharge = itemView.findViewById(R.id.tvCampPersonInCharge);
+            imgvCampQRCode = itemView.findViewById(R.id.imgvCampQRCode);
+        }
+    }
 }

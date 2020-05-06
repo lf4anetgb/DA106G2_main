@@ -29,4 +29,17 @@
     <string name="total_amount_">總金額：</string>
     <string name="please_enter_the_address">請輸入地址：</string>
     <string name="check_order">查訂單</string>
+    <string name="currently_reserved_">目前已訂位：</string>
+    <string name="booking_id_">訂位編號：</string>
+    <string name="start_date_">開始時間：</string>
+    <string name="end_time_">結束時間：</string>
+    <string name="booking_status_">訂位狀態：</string>
+    <string name="person_in_charge_">負責人員：</string>
+    <string name="credit_balance_">點數餘額：</string>
+    <string name="please_choose_a_payment_method_">請選擇付款方式：</string>
+    <string name="credit_payment">點數付款</string>
+    <string name="credit_card_payment">信用卡付款</string>
+    <string name="please_enter_credit_card_number_">請輸入信用卡號碼：</string>
+    <string name="month">月</string>
+    <string name="year">年</string>
 </resources>

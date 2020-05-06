@@ -97,7 +97,7 @@ public class DiaryListFragment extends Fragment implements View.OnClickListener 
         }
 
         adapter = new RecyclerViewAdapter(diaryList, RecyclerViewAdapter.LAYOUT_DIARY_LIST, navController);
-        adapter.setImageTask(imageTask);
+        adapter.setImageTask(imageTask, getView());
         recyclerView.setAdapter(adapter);
     }
 

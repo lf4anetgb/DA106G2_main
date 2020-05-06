@@ -100,7 +100,7 @@ public class MallListFragment extends Fragment implements View.OnClickListener {
         }
 
         adapter = new RecyclerViewAdapter(itemList, RecyclerViewAdapter.LAYOUT_MALL_LIST, navController);
-        adapter.setImageTask(imageTask);
+        adapter.setImageTask(imageTask, getView());
         recyclerView.setAdapter(adapter);
     }
 

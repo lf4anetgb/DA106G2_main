@@ -75,7 +75,7 @@ public class ShoopingFragment extends Fragment implements View.OnClickListener {
 
         //圖片先處理
         String url = Util.URL + "Android/ItemServlet";
-        imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), 0, imgViewShooping);
+        imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), view.getContext().getResources().getDisplayMetrics().widthPixels, imgViewShooping);
         imageTask.execute();
     }
 

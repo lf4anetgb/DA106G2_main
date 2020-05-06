@@ -14,7 +14,7 @@ public class Util {
 
     //連線對象
     public final static String URL = "http://10.0.2.2:8081/DA106G2/"; // 模擬器用
-//    public final static String URL = "http://192.168.0.185:8081/DA106G2/"; // 實機用
+//    public final static String URL = "http://192.168.196.129:8081/DA106G2/"; // 實機用
 
     //購物車
     public static ArrayList<OrderItem> CART = new ArrayList<>();

@@ -48,7 +48,11 @@
         android:id="@+id/campListFragment"
         android:name="com.example.da106g2_main.camp.CampListFragment"
         android:label="fragment_camp_list"
-        tools:layout="@layout/fragment_camp_list" />
+        tools:layout="@layout/fragment_camp_list" >
+        <action
+            android:id="@+id/action_campListFragment_to_memberLoginFragment"
+            app:destination="@id/memberLoginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/memberListFragment"
         android:name="com.example.da106g2_main.member.MemberListFragment"
@@ -110,6 +114,9 @@
         <action
             android:id="@+id/action_shoppingCartFragment_to_memberOrderDetailFragment"
             app:destination="@id/memberOrderDetailFragment" />
+        <action
+            android:id="@+id/action_shoppingCartFragment_to_toolsCreditCardFragment"
+            app:destination="@id/toolsCreditCardFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchCommodityFragment"
@@ -139,4 +146,13 @@
         android:name="com.example.da106g2_main.member.MemberOrderDetailFragment"
         android:label="fragment_member_order_detail"
         tools:layout="@layout/fragment_member_order_detail" />
+    <fragment
+        android:id="@+id/toolsCreditCardFragment"
+        android:name="com.example.da106g2_main.tools.ToolsCreditCardFragment"
+        android:label="fragment_tools_credit_card"
+        tools:layout="@layout/fragment_tools_credit_card" >
+        <action
+            android:id="@+id/action_toolsCreditCardFragment_to_memberOrderDetailFragment"
+            app:destination="@id/memberOrderDetailFragment" />
+    </fragment>
 </navigation>

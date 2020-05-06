@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.navigationcomponentsexample"
+        applicationId "com.example.da106g2_main"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -59,6 +59,9 @@ dependencies {
     def gson_version = "2.8.6"
     implementation "com.google.code.gson:gson:$gson_version"
 
+    //QR_Code
+    implementation "com.google.zxing:core:3.3.3"
+
     //webRTC
-    implementation 'org.webrtc:google-webrtc:1.0.30039'
+    implementation "org.webrtc:google-webrtc:1.0.30039"
 }

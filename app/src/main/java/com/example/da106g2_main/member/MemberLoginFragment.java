@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -78,10 +77,9 @@ public class MemberLoginFragment extends Fragment implements View.OnClickListene
             jsonObject.addProperty("password", password);
             communicationTask = new CommunicationTask(url, jsonObject.toString());
 
-
             try {
                 String result = communicationTask.execute().get();
-                isMember = Boolean.valueOf(result);
+                isMember = "true".equals(result);
             } catch (InterruptedException e) {
                 Log.d(TAG, "中斷錯誤： " + e.toString());
                 isMember = false;
@@ -92,6 +90,7 @@ public class MemberLoginFragment extends Fragment implements View.OnClickListene
                 Log.d(TAG, "倒大楣啦！錯誤：" + e.toString());
                 isMember = false;
             }
+
         } else {
             tvLogInMessage.setText("目前沒有連線");
         }

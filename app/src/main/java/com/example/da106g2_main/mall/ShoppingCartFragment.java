@@ -19,17 +19,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.da106g2_main.R;
+import com.example.da106g2_main.member.Member;
 import com.example.da106g2_main.tools.CommunicationTask;
 import com.example.da106g2_main.tools.ImageTask;
 import com.example.da106g2_main.tools.Util;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.da106g2_main.tools.Util.CART;
 
@@ -37,7 +41,7 @@ import static com.example.da106g2_main.tools.Util.CART;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ShoppingCartFragment extends Fragment implements View.OnClickListener {
+public class ShoppingCartFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private final static String TAG = "ShoppingCartFragment",
             SHARED_PREFERENCES_GUIDE = "member";
 
@@ -45,10 +49,13 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
     private RecyclerView recyclerView;
     private ShoppingRecyclerAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private TextView tvShowTotalAmount;
+    private TextView tvShowTotalAmount, tvCreditBalance;
+    private CommunicationTask getMemberTask, putOneOrder;
     private ImageTask imageTask;
     private EditText etCartAddress;
-    private CommunicationTask putOneOrder;
+    private RadioGroup rgPaymentMethod;
+
+    private int paywith = 0;
 
     public ShoppingCartFragment() {
         // Required empty public constructor
@@ -69,7 +76,10 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         view.findViewById(R.id.btnCartCheckout).setOnClickListener(this);
         view.findViewById(R.id.btnCartToShopping).setOnClickListener(this);
         tvShowTotalAmount = view.findViewById(R.id.tvShowTotalAmount);
+        tvCreditBalance = view.findViewById(R.id.tvCreditBalance);
         etCartAddress = view.findViewById(R.id.etCartAddress);
+        rgPaymentMethod = view.findViewById(R.id.rgPaymentMethod);
+        rgPaymentMethod.setOnCheckedChangeListener(this);
 
         //設定Layout格式
         layoutManager = new LinearLayoutManager(getActivity());
@@ -86,7 +96,32 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             return;
         }
 
+        //先導過去檢查是否登入
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
+        String member_id = sharedPreferences.getString("memberID", "");
+        if (member_id == null || member_id.length() <= 0) {
+            navController.navigate(R.id.action_shoppingCartFragment_to_memberLoginFragment);
+            return;
+        }
+
+        //取得目前該會員點數
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("action", "getMember");
+        jsonObject.addProperty("member_id", member_id);
+
+        getMemberTask = new CommunicationTask(Util.URL + "Android/MemberServlet", jsonObject.toString());
+        getMemberTask.execute();
         tvShowTotalAmount.setText(getTotalPrice());
+        try {
+            String strIn = getMemberTask.get();
+            tvCreditBalance.setText(String.valueOf(
+                    new GsonBuilder().setDateFormat("yyyy-MM-dd").create()
+                            .fromJson(strIn, Member.class).getPoint()));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         adapter = new ShoppingRecyclerAdapter(CART);
         recyclerView.setAdapter(adapter);
@@ -99,10 +134,18 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             imageTask.cancel(true);
             imageTask = null;
         }
+        if (getMemberTask != null) {
+            getMemberTask.cancel(true);
+            getMemberTask = null;
+        }
+        if (putOneOrder != null) {
+            putOneOrder.cancel(true);
+            putOneOrder = null;
+        }
     }
 
     //試算總價格用
-    public String getTotalPrice() {
+    private String getTotalPrice() {
         //包裝任務
         Gson gson = new Gson();
         JsonObject jsonObject = new JsonObject();
@@ -124,18 +167,25 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 
     }
 
+    //單選單事件
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.rbCreditPayment:
+                paywith = 0;
+                break;
+
+            case R.id.rbCreditCardPayment:
+                paywith = 1;
+                break;
+        }
+    }
+
     //按鈕事件群
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCartCheckout: {
-                //先導過去檢查是否登入
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
-                String member_id = sharedPreferences.getString("memberID", "");
-                if (member_id == null || member_id.length() <= 0) {
-                    navController.navigate(R.id.action_shoppingCartFragment_to_memberLoginFragment);
-                    return;
-                }
 
                 String address = etCartAddress.getText().toString();
                 if (address == null || address.length() <= 0) {
@@ -143,14 +193,27 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                     return;
                 }
 
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
+                String member_id = sharedPreferences.getString("memberID", "");
+
                 //包裝任務
                 Gson gson = new Gson();
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("action", "insertWithOrder_details");
                 jsonObject.addProperty("cart", gson.toJson(CART));
                 jsonObject.addProperty("member_id", member_id);
                 jsonObject.addProperty("order_address", address);
+                jsonObject.addProperty("paywith", paywith);
 
+                //使用信用卡付款
+                if (paywith == 1) {
+                    jsonObject.addProperty("action", "insertWithOrder_details");
+                    Bundle bundle = new Bundle();
+                    bundle.putString("jsonObject", jsonObject.toString());
+                    bundle.putString("TAG", TAG);
+                    navController.navigate(R.id.action_shoppingCartFragment_to_toolsCreditCardFragment, bundle);
+                    return;
+                }
+                jsonObject.addProperty("action", "insertWithOrder_details_payPoints");
                 putOneOrder = new CommunicationTask(Util.URL + "Android/OrdersServlet", jsonObject.toString());
 
                 String jsonIn;
@@ -170,8 +233,8 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                 Bundle bundle = new Bundle();
                 bundle.putString("order_id", jsonIn);
                 Util.showToast(v.getContext(), "上傳成功");
-                navController.navigate(R.id.action_shoppingCartFragment_to_memberOrderDetailFragment, bundle);
                 CART = new ArrayList<>();
+                navController.navigate(R.id.action_shoppingCartFragment_to_memberOrderDetailFragment, bundle);
                 return;
             }
 
@@ -209,7 +272,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 
             String url = Util.URL + "Android/ItemServlet";
 
-            imageTask = new ImageTask(url, ImageTask.FROM_ITEM, orderItem.getItem_id(), 0, holder.imgViewCart);
+            imageTask = new ImageTask(url, ImageTask.FROM_ITEM, orderItem.getItem_id(), getContext().getResources().getDisplayMetrics().widthPixels, holder.imgViewCart);
             imageTask.execute();
 
             holder.tvCartCommodityTitle.setText(orderItem.getItem_name());

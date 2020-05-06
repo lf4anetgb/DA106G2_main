@@ -96,7 +96,7 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         }
 
         adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
-        adapter.setImageTask(imageTask);
+        adapter.setImageTask(imageTask, getView());
         recyclerView.setAdapter(adapter);
     }
 

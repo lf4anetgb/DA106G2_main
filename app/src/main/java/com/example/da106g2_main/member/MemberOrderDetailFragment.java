@@ -70,12 +70,18 @@ public class MemberOrderDetailFragment extends Fragment {
         }
 
         String jsonIn = getArguments().getString("order");
-        Gson gson = new Gson();
-        Orders order = gson.fromJson(jsonIn, Orders.class);
+        String orderID = null;
+        if (jsonIn == null || jsonIn.length() <= 0) {
+            orderID = getArguments().getString("order_id");
+        } else {
+            Gson gson = new Gson();
+            orderID = gson.fromJson(jsonIn, Orders.class).getOrder_id();
+        }
+
         //包裝任務
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("action", "getAll");
-        jsonObject.addProperty("order_id", order.getOrder_id());
+        jsonObject.addProperty("order_id", orderID);
 
         getOrderDetailsTask = new CommunicationTask(Util.URL + "Android/Order_detailServlet", jsonObject.toString());
         getOrderDetailsTask.execute();
@@ -102,7 +108,7 @@ public class MemberOrderDetailFragment extends Fragment {
 
         adapter = new RecyclerViewAdapter(orderDetails, RecyclerViewAdapter.LAYOUT_ORDER_DETAIL_LIST, navController);
         adapter.setCommunicationTask(getOrderDetailsTask);
-        adapter.setImageTask(imageTask);
+        adapter.setImageTask(imageTask, getView());
         recyclerView.setAdapter(adapter);
     }
 

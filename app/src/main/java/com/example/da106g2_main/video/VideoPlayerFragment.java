@@ -16,8 +16,12 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.da106g2_main.R;
+import com.example.da106g2_main.tools.CommunicationTask;
 import com.example.da106g2_main.tools.Util;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +32,9 @@ public class VideoPlayerFragment extends Fragment {
     private TextView tvVideoPlayerTitle, tvVideoPlayerWatcher, tvVideoPlayerTime, tvVideoPlayerTeaserContent;
     private VideoView liveVideoView;
     private MediaController mediaController;
+    private CommunicationTask getLiveTask;
 
-    Live live;
+    private Live live;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -67,9 +72,6 @@ public class VideoPlayerFragment extends Fragment {
         mediaController.setAnchorView(liveVideoView);
         liveVideoView.setMediaController(mediaController);
 
-
-
-
     }
 
     @Override
@@ -90,5 +92,47 @@ public class VideoPlayerFragment extends Fragment {
                 liveVideoView.start();
             }
         });
+
+        //緩存監聽器
+        liveVideoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                switch (what) {
+                    //緩存開始
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        if (liveVideoView.isPlaying()) {
+                            liveVideoView.pause();
+                        }
+                        break;
+
+                    //緩存結束
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        liveVideoView.start();
+                        break;
+
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        live.setWatched_num(live.getWatched_num() + 1);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("action", "updateLiveNoBLOB");
+        jsonObject.addProperty("Live", new Gson().toJson(live));
+
+        getLiveTask = new CommunicationTask(Util.URL + "Android/LiveServlet", jsonObject.toString());
+        try {
+            getLiveTask.execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getLiveTask.cancel(true);
+        getLiveTask = null;
     }
 }
