@@ -33,12 +33,14 @@ public class ShoopingFragment extends Fragment implements View.OnClickListener {
             tvCommodityCounter,//購物數量
             tvShoopingCommodityPrice,//價格
             tvCommodityMessage;//內容描素
-    private ImageView imgViewShooping;//商品圖
+    private ImageView imgViewShooping,//商品圖
+            imgViewItemContent;//商品介紹圖
 
     private NavController navController;
     private RecyclerView recyclerView;
 
-    private ImageTask imageTask;//圖片任務
+    private ImageTask imageTask,//圖片任務
+            imageTaskContent;//圖片任務_商品介紹圖
 
     private Item item;//單一商品物件
 
@@ -58,6 +60,7 @@ public class ShoopingFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         imgViewShooping = view.findViewById(R.id.imgViewShooping);
+        imgViewItemContent = view.findViewById(R.id.imgViewItemContent);
         tvCommodityTitle = view.findViewById(R.id.tvCommodityTitle);
         tvCommodityCounter = view.findViewById(R.id.tvCommodityCounter);
         tvShoopingCommodityPrice = view.findViewById(R.id.tvShoopingCommodityPrice);
@@ -77,6 +80,12 @@ public class ShoopingFragment extends Fragment implements View.OnClickListener {
         String url = Util.URL + "Android/ItemServlet";
         imageTask = new ImageTask(url, ImageTask.FROM_ITEM, item.getItem_id(), view.getContext().getResources().getDisplayMetrics().widthPixels, imgViewShooping);
         imageTask.execute();
+
+        //如果介紹文是圖片時(Servlet那端先傳空字串)
+        if (item.getItem_content() == null || "".equals(item.getItem_content())) {
+            imageTaskContent = new ImageTask(url, ImageTask.FROM_ITEM_CONTENT, item.getItem_id(), view.getContext().getResources().getDisplayMetrics().widthPixels, imgViewItemContent);
+            imageTaskContent.execute();
+        }
     }
 
     @Override
@@ -97,6 +106,11 @@ public class ShoopingFragment extends Fragment implements View.OnClickListener {
         if (imageTask != null) {
             imageTask.cancel(true);
             imageTask = null;
+        }
+
+        if (imageTaskContent != null) {
+            imageTaskContent.cancel(true);
+            imageTaskContent = null;
         }
 
         if (item != null) {

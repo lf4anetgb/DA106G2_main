@@ -39,7 +39,7 @@ public class MemberOrderDetailFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ImageTask imageTask;
+    private ImageTask[] imageTasks;
     private CommunicationTask getOrderDetailsTask;
 
     public MemberOrderDetailFragment() {
@@ -106,18 +106,24 @@ public class MemberOrderDetailFragment extends Fragment {
             return;
         }
 
+        imageTasks = new ImageTask[orderDetails.size()];
         adapter = new RecyclerViewAdapter(orderDetails, RecyclerViewAdapter.LAYOUT_ORDER_DETAIL_LIST, navController);
         adapter.setCommunicationTask(getOrderDetailsTask);
-        adapter.setImageTask(imageTask, getView());
+        adapter.setImageTasks(imageTasks, getView());
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (imageTask != null) {
-            imageTask.cancel(true);
-            imageTask = null;
+
+        ImageTask[] imageTasks_ = adapter.getImageTasks();
+
+        for (int i = 0; i < imageTasks_.length; i++) {
+            if (imageTasks_[i] != null) {
+                imageTasks_[i].cancel(true);
+                imageTasks_[i] = null;
+            }
         }
 
         if (getOrderDetailsTask != null) {

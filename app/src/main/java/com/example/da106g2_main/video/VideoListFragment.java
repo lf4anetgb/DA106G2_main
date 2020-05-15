@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.example.da106g2_main.R;
 import com.example.da106g2_main.tools.CommunicationTask;
@@ -26,14 +27,15 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class VideoListFragment extends Fragment implements View.OnClickListener {
+public class VideoListFragment extends Fragment implements SearchView.OnQueryTextListener {
     private final static String TAG = "VideoListFragment";
     private NavController navController;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ImageTask imageTask;
+    private ImageTask[] imageTasks;
     private CommunicationTask getLiveTask;
+    private SearchView svVideo;
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -53,8 +55,8 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         recyclerView = view.findViewById(R.id.liveRecyclerView);
-        view.findViewById(R.id.btnSearchVideo).setOnClickListener(this);
-        view.findViewById(R.id.btnUploadVideo).setOnClickListener(this);
+        svVideo = view.findViewById(R.id.svVideo);
+        svVideo.setOnQueryTextListener(this);
 
         //設定Layout格式
         layoutManager = new LinearLayoutManager(getActivity());
@@ -71,20 +73,37 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
             return;
         }
 
-        //包裝任務
+        //先判斷是否之前有搜尋結果，如有結果就讀取出後請空儲存
+        //注意第一次進入惠讀取Exception
+        String inStr = "";
+        try {
+            inStr = getArguments().getString("searchVideo");
+            getArguments().remove("searchVideo");
+        } catch (Exception e) {
+            inStr = "";
+        }
+
+
+        List<Live> liveList = null; //存資料用
+        Type listType = new TypeToken<List<Live>>() {
+        }.getType();
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("action", "getAll");
+
+        if (inStr == null || inStr.length() <= 0) {
+            //包裝任務
+            jsonObject.addProperty("action", "getAll");
+        } else {
+            jsonObject.addProperty("action", "searchByString");
+            jsonObject.addProperty("string", inStr);
+        }
+
 
         //下命令
         getLiveTask = new CommunicationTask(Util.URL + "Android/LiveServlet", jsonObject.toString());
 
-        List<Live> liveList = null; //存資料用
-
         try {
             String jsonIn = getLiveTask.execute().get();
             Log.d(TAG, "jsonIN: " + jsonIn);
-            Type listType = new TypeToken<List<Live>>() {
-            }.getType();
             liveList = new Gson().fromJson(jsonIn, listType);
         } catch (Exception e) {
             Log.d(TAG, e.toString());
@@ -95,36 +114,45 @@ public class VideoListFragment extends Fragment implements View.OnClickListener 
             return;
         }
 
-        adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
-        adapter.setImageTask(imageTask, getView());
-        recyclerView.setAdapter(adapter);
-    }
+        imageTasks = new ImageTask[liveList.size()];
 
-    //導向用
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnSearchVideo:
-                navController.navigate(R.id.action_videoListFragment_to_videoSearchFragment);
-                break;
-            case R.id.btnUploadVideo:
-                navController.navigate(R.id.action_videoListFragment_to_videoUploadFragment);
-                break;
-        }
+        adapter = new RecyclerViewAdapter(liveList, RecyclerViewAdapter.LAYOUT_VIDEO_LIST, navController);
+        adapter.setImageTasks(imageTasks, getView());
+        recyclerView.setAdapter(adapter);
     }
 
     //離開畫面時執行
     @Override
     public void onStop() {
         super.onStop();
-        if (imageTask != null) {
-            imageTask.cancel(true);
-            imageTask = null;
+
+        ImageTask[] imageTasks_ = adapter.getImageTasks();
+
+        for (int i = 0; i < imageTasks_.length; i++) {
+            if (imageTasks_[i] != null) {
+                imageTasks_[i].cancel(true);
+                imageTasks_[i] = null;
+            }
         }
 
         if (getLiveTask != null) {
             getLiveTask.cancel(true);
             getLiveTask = null;
         }
+    }
+
+    //搜尋送出
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Bundle bundle = new Bundle();
+        bundle.putString("searchVideo", query);
+        navController.navigate(R.id.action_videoListFragment_self, bundle);
+        return true;
+    }
+
+    //搜尋改變
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }

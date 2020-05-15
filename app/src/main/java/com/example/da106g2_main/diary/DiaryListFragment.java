@@ -7,8 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,14 +32,14 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiaryListFragment extends Fragment implements View.OnClickListener {
+public class DiaryListFragment extends Fragment {
     private final static String TAG = "DiaryListFragment";
     private NavController navController;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ImageTask imageTask;
     private CommunicationTask getDiaryTask;
+    private ImageTask[] imageTasks;
 
     public DiaryListFragment() {
         // Required empty public constructor
@@ -57,11 +58,9 @@ public class DiaryListFragment extends Fragment implements View.OnClickListener 
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         recyclerView = view.findViewById(R.id.diaryRecyclerView);
-        view.findViewById(R.id.btnSearchDiary);
-        view.findViewById(R.id.btnUploadDiary);
 
-        recyclerView.setHasFixedSize(true);//固定大小及模式
-        layoutManager = new LinearLayoutManager(getActivity());
+//        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -96,17 +95,23 @@ public class DiaryListFragment extends Fragment implements View.OnClickListener 
             return;
         }
 
+        imageTasks = new ImageTask[diaryList.size()];
+
         adapter = new RecyclerViewAdapter(diaryList, RecyclerViewAdapter.LAYOUT_DIARY_LIST, navController);
-        adapter.setImageTask(imageTask, getView());
+        adapter.setImageTasks(imageTasks, getView());
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (imageTask != null) {
-            imageTask.cancel(true);
-            imageTask = null;
+        ImageTask[] imageTasks_ = adapter.getImageTasks();
+
+        for (int i = 0; i < imageTasks_.length; i++) {
+            if (imageTasks_[i] != null) {
+                imageTasks_[i].cancel(true);
+                imageTasks_[i] = null;
+            }
         }
 
         if (getDiaryTask != null) {
@@ -115,8 +120,4 @@ public class DiaryListFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }

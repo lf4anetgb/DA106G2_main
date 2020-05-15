@@ -75,6 +75,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         recyclerView = view.findViewById(R.id.cartRecyclerView);
         view.findViewById(R.id.btnCartCheckout).setOnClickListener(this);
         view.findViewById(R.id.btnCartToShopping).setOnClickListener(this);
+        view.findViewById(R.id.imgvAddrMagic).setOnClickListener(this);
         tvShowTotalAmount = view.findViewById(R.id.tvShowTotalAmount);
         tvCreditBalance = view.findViewById(R.id.tvCreditBalance);
         etCartAddress = view.findViewById(R.id.etCartAddress);
@@ -130,6 +131,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
+
         if (imageTask != null) {
             imageTask.cancel(true);
             imageTask = null;
@@ -241,6 +243,10 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             case R.id.btnCartToShopping: {
                 navController.navigate(R.id.action_shoppingCartFragment_to_mallListFragment);
                 return;
+            }
+
+            case R.id.imgvAddrMagic:{
+                etCartAddress.setText("407台中市西屯區市政北七路177號");
             }
         }
     }

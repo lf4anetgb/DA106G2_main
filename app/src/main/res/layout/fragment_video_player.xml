@@ -14,14 +14,16 @@
         <FrameLayout
             android:id="@+id/frameLayout2"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
+            android:background="@color/common_google_signin_btn_text_light_focused"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <VideoView
                 android:id="@+id/liveVideoView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="wrap_content" />
 
         </FrameLayout>
 

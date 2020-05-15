@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/videoListFragment"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/baseline_ondemand_video_black_18dp"
         android:title="@string/live" />
     <item
         android:id="@+id/diaryListFragment"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/baseline_menu_book_black_18dp"
         android:title="@string/diary" />
     <item
         android:id="@+id/mallListFragment"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/baseline_storefront_black_18dp"
         android:title="@string/mall" />
     <item
         android:id="@+id/campListFragment"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/baseline_museum_black_18dp"
         android:title="@string/camp" />
     <item
         android:id="@+id/memberListFragment"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/baseline_person_black_18dp"
         android:title="@string/member" />
 </menu>

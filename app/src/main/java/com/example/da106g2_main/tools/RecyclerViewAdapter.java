@@ -3,7 +3,6 @@ package com.example.da106g2_main.tools;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -41,6 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private ImageTask imageTask = null;
     private CommunicationTask communicationTask = null;
     private View view_;
+    private ImageTask[] imageTasks;
 
     //用於RecyclerView選擇
     public final static int LAYOUT_VIDEO_LIST = 0;
@@ -50,17 +51,36 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public final static int LAYOUT_ORDER_DETAIL_LIST = 4;
     public final static int LAYOUT_BOOKING_LIST = 5;
 
+    public ImageTask[] getImageTasks() {
+        return imageTasks;
+    }
+
+    public void setImageTasks(ImageTask[] imageTasks, View view) {
+        this.imageTasks = imageTasks;
+        setWidthPixels(view);
+    }
+
+    public ImageTask getImageTask() {
+        return imageTask;
+    }
+
     //設定圖片連線物件
     public void setImageTask(ImageTask imageTask, View view) {
         this.imageTask = imageTask;
+        setWidthPixels(view);
+    }
+
+    private void setWidthPixels(View view) {
         switch (layoutType) {
             case LAYOUT_VIDEO_LIST:
-            case LAYOUT_DIARY_LIST:
                 imageSize = view.getContext().getResources().getDisplayMetrics().widthPixels;
                 return;
             case LAYOUT_MALL_LIST:
             case LAYOUT_ORDER_DETAIL_LIST:
                 imageSize = view.getContext().getResources().getDisplayMetrics().widthPixels / 4;
+                return;
+            case LAYOUT_DIARY_LIST:
+                imageSize = view.getContext().getResources().getDisplayMetrics().widthPixels / 3;
                 return;
         }
     }
@@ -164,19 +184,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //日誌清單任務
             case LAYOUT_DIARY_LIST: {
                 final Diary diary = (Diary) data.get(position);
-//                String url = Util.URL + "Android/LiveServlet";
+                String url = Util.URL + "Android/DiaryServlet";
                 Viewolder_DiaryList holderVideoList = (Viewolder_DiaryList) holder;
 
-//                imageTask = new ImageTask(url, ImageTask.FROM_LIVE, live.getLive_id(), 0, holderVideoList.ivLiveItem);
-//                imageTask.execute();
+//                ImageTask imageTask_diary = imageTasks.get(position % imageTasks.size());
+//                imageTask_diary = new ImageTask(url, ImageTask.FROM_DIARY, diary.getDiary_id(), imageSize, holderVideoList.ivDiaryItem);
+//                imageTask_diary.execute();
+                imageTasks[position] = new ImageTask(url, ImageTask.FROM_DIARY, diary.getDiary_id(), imageSize, holderVideoList.ivDiaryItem);
+                imageTasks[position].execute();
 
-//                private CardView diaryItem;
-//                private TextView tvDiaryItemTitle, tvDiaryDate, tvDiaryWrite;
-//                private ImageView ivDiaryItem;
-
-                holderVideoList.tvDiaryItemTitle.setText(diary.getDiary_title());
-                holderVideoList.tvDiaryDate.setText(diary.getDiary_time().toString());
-                holderVideoList.tvDiaryWrite.setText(diary.getDiary_write());
                 holderVideoList.diaryItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -315,10 +331,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holderVideoList.bookingItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        StringBuffer sb = new StringBuffer(Util.URL).append("Android/BookingServlet?bk_number=").append(booking.getBk_number());
                         int smallerDimension = getDimension();
 
-                        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(sb.toString(), null, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), smallerDimension);
+                        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(booking.getBk_number(), null, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), smallerDimension);
 
                         try {
                             Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
@@ -366,15 +381,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //日誌清單用
     class Viewolder_DiaryList extends RecyclerView.ViewHolder {
         private CardView diaryItem;
-        private TextView tvDiaryItemTitle, tvDiaryDate, tvDiaryWrite;
         private ImageView ivDiaryItem;
 
         public Viewolder_DiaryList(@NonNull View itemView) {
             super(itemView);
             diaryItem = itemView.findViewById(R.id.diaryItem);
-            tvDiaryItemTitle = itemView.findViewById(R.id.tvDiaryItemTitle);
-            tvDiaryDate = itemView.findViewById(R.id.tvDiaryItemDate);
-            tvDiaryWrite = itemView.findViewById(R.id.tvDiaryItemWrite);
             ivDiaryItem = itemView.findViewById(R.id.ivDiaryItem);
         }
     }

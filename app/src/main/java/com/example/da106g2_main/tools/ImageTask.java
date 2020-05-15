@@ -22,6 +22,9 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
     //通用來源參數
     public final static short FROM_LIVE = 0;
     public final static short FROM_ITEM = 1;
+    public final static short FROM_ITEM_CONTENT = 2;
+    public final static short FROM_DIARY = 3;
+
 
     private final static String TAG = "ImageTask";
     private String url, target;//連線位子、取得哪一個
@@ -50,7 +53,11 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
         switch (source) {
             case FROM_LIVE:
             case FROM_ITEM:
+            case FROM_DIARY:
                 return "getOnePicture";
+
+            case FROM_ITEM_CONTENT:
+                return "getOnePictureContent";
         }
         //如都不是時
         return "";
@@ -61,8 +68,12 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
         switch (source) {
             case FROM_LIVE:
                 return "live_id";
+
             case FROM_ITEM:
+            case FROM_ITEM_CONTENT:
                 return "item_id";
+            case FROM_DIARY:
+                return "diary_id";
         }
         return "";
     }
@@ -73,8 +84,10 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("action", getSendCategory());
         jsonObject.addProperty(getSendSource(), target);
-        jsonObject.addProperty("imageSize",size);
-
+        jsonObject.addProperty("imageSize", size);
+        if (isCancelled()) {
+            return null;
+        }
         return getRemoteImage(url, jsonObject.toString());
     }
 
@@ -89,15 +102,23 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
                 con.setDoOutput(true);
                 con.setUseCaches(false);
                 con.setRequestMethod("POST");
+
                 try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()))) {
                     bw.write(jsonOut);
                     Log.d(TAG, "output: " + jsonOut);
+                }
+
+                if (isCancelled()) {
+                    return null;
                 }
 
                 //接收處理
                 int responseCode = con.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    if (isCancelled()) {
+                        return null;
+                    }
                     //使用圖形工廠的decodeStream將資料IN出來
                     bitmap = BitmapFactory.decodeStream(new BufferedInputStream(con.getInputStream()));
 
@@ -141,4 +162,5 @@ public class ImageTask extends AsyncTask<Object, Integer, Bitmap> {
         }
         imageView.setImageBitmap(img);
     }
+
 }

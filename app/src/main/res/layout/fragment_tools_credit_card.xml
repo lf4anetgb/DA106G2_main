@@ -131,7 +131,7 @@
                 android:id="@+id/imageView8"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/logo_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

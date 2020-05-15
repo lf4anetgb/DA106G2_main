@@ -18,7 +18,6 @@ public class Booking implements Serializable {
     private Integer price;
 
     public Booking() {
-
     }
 
     public Booking(String bk_number, String member_id, String staff_id, Date bk_start, Date bk_end,

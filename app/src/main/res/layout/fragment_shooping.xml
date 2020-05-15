@@ -9,14 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnShoopingToShoppingCart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:text="@string/shopping_cart"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/cardview_shadow_end_color"
+            android:src="@drawable/baseline_shopping_cart_black_18dp"
+            android:translationZ="?attr/listPreferredItemHeight"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ScrollView
@@ -32,7 +34,7 @@
                 <ImageView
                     android:id="@+id/imgViewShooping"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/testp2" />
@@ -86,6 +88,7 @@
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
+                        android:backgroundTint="@color/cardview_shadow_end_color"
                         android:text="@string/less_symbol"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
@@ -96,18 +99,24 @@
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
+                        android:backgroundTint="@color/cardview_shadow_end_color"
                         android:text="@string/add_symbol"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tvCommodityCounter"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageButton
+                        android:id="@+id/btnAddShoppingCart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:backgroundTint="@color/cardview_shadow_end_color"
+                        android:src="@drawable/baseline_add_shopping_cart_black_18dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/btnCommodityAdd"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/btnAddShoppingCart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_to_shopping_cart" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tvCommodityMessage"
@@ -116,6 +125,12 @@
                     android:layout_margin="4dp"
                     android:text="商品內容"
                     android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/imgViewItemContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/QARecyclerView"

@@ -11,14 +11,11 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_video_list">
         <action
-            android:id="@+id/action_videoListFragment_to_videoSearchFragment"
-            app:destination="@id/videoSearchFragment" />
-        <action
-            android:id="@+id/action_videoListFragment_to_videoUploadFragment"
-            app:destination="@id/videoUploadFragment" />
-        <action
             android:id="@+id/action_videoListFragment_to_videoPlayerFragment"
             app:destination="@id/videoPlayerFragment" />
+        <action
+            android:id="@+id/action_videoListFragment_self"
+            app:destination="@id/videoListFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryListFragment"
@@ -38,11 +35,11 @@
             android:id="@+id/action_mallListFragment_to_shoppingCartFragment"
             app:destination="@id/shoppingCartFragment" />
         <action
-            android:id="@+id/action_mallListFragment_to_searchCommodityFragment"
-            app:destination="@id/searchCommodityFragment" />
-        <action
             android:id="@+id/action_mallListFragment_to_shoopingFragment"
             app:destination="@id/shoopingFragment" />
+        <action
+            android:id="@+id/action_mallListFragment_self"
+            app:destination="@id/mallListFragment" />
     </fragment>
     <fragment
         android:id="@+id/campListFragment"
@@ -69,20 +66,6 @@
             app:destination="@id/memberOrdersListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/videoSearchFragment"
-        android:name="com.example.da106g2_main.video.VideoSearchFragment"
-        android:label="fragment_video_search"
-        tools:layout="@layout/fragment_video_search" />
-    <fragment
-        android:id="@+id/videoUploadFragment"
-        android:name="com.example.da106g2_main.video.VideoUploadFragment"
-        android:label="fragment_video_upload"
-        tools:layout="@layout/fragment_video_upload" >
-        <action
-            android:id="@+id/action_videoUploadFragment_to_memberLoginFragment"
-            app:destination="@id/memberLoginFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/videoPlayerFragment"
         android:name="com.example.da106g2_main.video.VideoPlayerFragment"
         android:label="fragment_video_player"
@@ -96,7 +79,11 @@
         android:id="@+id/diaryFragment"
         android:name="com.example.da106g2_main.diary.DiaryFragment"
         android:label="fragment_diary"
-        tools:layout="@layout/fragment_diary" />
+        tools:layout="@layout/fragment_diary" >
+        <action
+            android:id="@+id/action_diaryFragment_to_diaryShowImageFragment"
+            app:destination="@id/diaryShowImageFragment" />
+    </fragment>
     <fragment
         android:id="@+id/shoppingCartFragment"
         android:name="com.example.da106g2_main.mall.ShoppingCartFragment"
@@ -118,11 +105,6 @@
             android:id="@+id/action_shoppingCartFragment_to_toolsCreditCardFragment"
             app:destination="@id/toolsCreditCardFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/searchCommodityFragment"
-        android:name="com.example.da106g2_main.mall.SearchCommodityFragment"
-        android:label="fragment_search_commodity"
-        tools:layout="@layout/fragment_search_commodity" />
     <fragment
         android:id="@+id/shoopingFragment"
         android:name="com.example.da106g2_main.mall.ShoopingFragment"
@@ -155,4 +137,9 @@
             android:id="@+id/action_toolsCreditCardFragment_to_memberOrderDetailFragment"
             app:destination="@id/memberOrderDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/diaryShowImageFragment"
+        android:name="com.example.da106g2_main.diary.DiaryShowImageFragment"
+        android:label="fragment_diary_show_image"
+        tools:layout="@layout/fragment_diary_show_image" />
 </navigation>

@@ -37,7 +37,6 @@ public class MemberOrdersListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ImageTask imageTask;
     private CommunicationTask getOrdersTask;
 
     public MemberOrdersListFragment() {
@@ -105,10 +104,7 @@ public class MemberOrdersListFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (imageTask != null) {
-            imageTask.cancel(true);
-            imageTask = null;
-        }
+
         if (getOrdersTask != null) {
             getOrdersTask.cancel(true);
             getOrdersTask = null;

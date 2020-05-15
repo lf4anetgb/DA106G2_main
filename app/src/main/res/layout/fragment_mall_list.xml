@@ -18,21 +18,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/btnSearchCommodity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="@string/search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="50dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/logo_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -45,26 +35,42 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <SearchView
+                android:id="@+id/svItem"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_margin="4dp"
+                android:adjustViewBounds="true"
+                android:maxWidth="200dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnMallToShoppingCart"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </SearchView>
+
+            <ImageButton
+                android:id="@+id/btnMallToShoppingCart"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_margin="4dp"
+                android:backgroundTint="@color/cardview_shadow_end_color"
+                android:src="@drawable/baseline_shopping_cart_black_18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mallRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="-2dp"
+            android:background="@color/cardview_shadow_start_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
-
-        <Button
-            android:id="@+id/btnMallToShoppingCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:text="@string/shopping_cart"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

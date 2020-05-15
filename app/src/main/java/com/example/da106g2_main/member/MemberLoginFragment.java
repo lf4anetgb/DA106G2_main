@@ -52,7 +52,7 @@ public class MemberLoginFragment extends Fragment implements View.OnClickListene
         etAccount = view.findViewById(R.id.etAccount);
         etPassword = view.findViewById(R.id.etPassword);
         view.findViewById(R.id.btnLogin).setOnClickListener(this);
-        view.findViewById(R.id.btnRegistration).setOnClickListener(this);
+        view.findViewById(R.id.imgvLoginMagic).setOnClickListener(this);
         tvLogInMessage = view.findViewById(R.id.tvLogInMessage);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_GUIDE, Context.MODE_PRIVATE);
@@ -114,11 +114,13 @@ public class MemberLoginFragment extends Fragment implements View.OnClickListene
                         .putString("password", password).apply();
                 activity.setResult(activity.RESULT_OK);
                 activity.onBackPressed();
+                return;
             }
-            break;
-            case R.id.btnRegistration:
-                tvLogInMessage.setText("還沒做");
-                break;
+
+            case R.id.imgvLoginMagic: {
+                etAccount.setText("MMN0000006");
+                etPassword.setText("123456");
+            }
         }
     }
 
